@@ -7,18 +7,21 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+TEMPERATURE = 1.1
+TOP_P = 0.8
+
 openai.api_key = os.environ['OPEN_AI_TOKEN']
 DEEPL_TOKEN = os.environ['DEEPL_TOKEN']
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
 
-LANGUAGE_JAPAN = os.environ['LANGUAGE_JAPAN']
-LANGUAGE_ENGLISH = os.environ['LANGUAGE_ENGLISH']
+LANGUAGE_JAPAN = 'JA'
+LANGUAGE_ENGLISH = 'EN'
 
-DEEPL_URL = os.environ['DEEPL_URL']
+DEEPL_URL = 'https://api-free.deepl.com/v2/translate'
 
-OPEN_AI_MODEL = os.environ['OPEN_AI_MODEL']
+OPEN_AI_MODEL = 'gpt-3.5-turbo'
 
-BOT_WAKE_UP_MESSAGE = os.environ['BOT_WAKE_UP_MESSAGE']
+BOT_WAKE_UP_MESSAGE = '起きた'
 
 def translate(text, target_lang):
 
@@ -36,10 +39,12 @@ def translate(text, target_lang):
 def generate_response(text):
 
     response = openai.ChatCompletion.create(
-    model=OPEN_AI_MODEL,
-    messages=[
-        {"role": "user", "content": input_text}
-    ])
+    model = OPEN_AI_MODEL,
+    messages = [
+        {"role": "user", "content": text}
+    ],
+    temperature = TEMPERATURE,
+    top_p = TOP_P)
 
     return response["choices"][0]["message"]["content"]
 
@@ -58,6 +63,8 @@ async def reply(message):
 
     input_text = message.clean_content
     input_text = input_text.replace(f"@{client.user.name} ", "")
+
+    print(input_text)
     
     # input_text = translate(input_text, LANGUAGE_ENGLISH)
 
